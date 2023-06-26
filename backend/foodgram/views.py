@@ -29,7 +29,6 @@ from .serializers import (IngredientSerializer,
                           Shopping_cartSerializer)
 from .utils import check_password, writing_shopping_cart
 from .filters import RecipeFilter
-from dataload.read_data import Command
 
 
 class ObtainTokenViewSet(viewsets.ModelViewSet):
@@ -317,6 +316,3 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return Response(
                 {'errors': 'А рецепта в списке и не было...'},
                 status=status.HTTP_400_BAD_REQUEST)
-
-
-command = Command()

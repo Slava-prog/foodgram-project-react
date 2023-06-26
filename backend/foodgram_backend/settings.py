@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'django_filters',
     'foodgram.apps.FoodgramConfig',
     'users.apps.UsersConfig',
-    'dataload.apps.DataloadConfig',
     'colorfield'
 ]
 
