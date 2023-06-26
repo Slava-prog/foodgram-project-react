@@ -1,7 +1,10 @@
 from django.urls import path, include
 from rest_framework import routers
 
-from .views import IngredientViewSet, TagViewSet, RecipeViewSet, UserViewSet, ObtainTokenViewSet, RecipeIngredientViewSet
+from .views import (
+    IngredientViewSet, TagViewSet,
+    RecipeViewSet, UserViewSet, ObtainTokenViewSet
+    )
 
 app_name = 'foodgram'
 
@@ -15,7 +18,8 @@ router_v1.register('users', UserViewSet, basename='users')
 urlpatterns = [
     path('', include(router_v1.urls)),
     path('auth/token/login/',
-        ObtainTokenViewSet.as_view({'post': 'create'}),
-        name='token',
-    ),
+         ObtainTokenViewSet.as_view({'post': 'create'}),
+         name='token'),
+    path('auth/', include('djoser.urls')),
+    path('auth/', include('djoser.urls.jwt')),
 ]

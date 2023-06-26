@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 from colorfield.fields import ColorField
+from slugify import slugify
 
 User = get_user_model()
 CHOICES = (
@@ -14,10 +15,10 @@ CHOICES = (
 
 class Ingredient(models.Model):
     name = models.CharField(max_length=25)
-    measurement_unit = models.CharField(max_length=50,  choices = CHOICES)
+    measurement_unit = models.CharField(max_length=50)
 
     def __str__(self):
-        return f'{self.name}'
+        return f'{self.name} {self.measurement_unit}'
 
 
 class RecipeIngredient(models.Model):
@@ -26,21 +27,19 @@ class RecipeIngredient(models.Model):
         on_delete=models.CASCADE,
         related_name='ingredient_for_recipe'
     )
-    '''recipe = models.ForeignKey(
-        Recipe,
-        on_delete=models.CASCADE,
-        related_name='recipe_ingredient'
-        )'''
     amount = models.PositiveIntegerField()
 
     def __str__(self):
-        return f'{self.ingredient}'
+        name = self.ingredient.name
+        amount = self.amount
+        ingredient = self.ingredient.measurement_unit
+        return f'{name} {amount} {ingredient}'
 
 
 class Tag(models.Model):
-    name = models.CharField(max_length=25)
+    name = models.CharField(max_length=200)
     color = ColorField(default='#FF0000')
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(max_length=200, unique=True)
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -67,12 +66,16 @@ class Recipe(models.Model):
     text = models.TextField(max_length=200)
     tags = models.ManyToManyField(
         Tag,
-        related_name='tags'
     )
+    is_favorited = models.BooleanField(
+        default=False,
+        verbose_name='в избранном')
+    is_in_shopping_cart = models.BooleanField(
+        default=False,
+        verbose_name='в списке покупок')
     ingredients = models.ManyToManyField(
         RecipeIngredient,
-        related_name='ingredients'
-    ) # , through='RecipeIngredient'
+    )
     cooking_time = models.PositiveIntegerField()
 
     class Meta:
@@ -80,7 +83,7 @@ class Recipe(models.Model):
 
     def __str__(self):
         return self.name
-    
+
 
 class Follow(models.Model):
     user = models.ForeignKey(
@@ -100,4 +103,42 @@ class Follow(models.Model):
                 'user', 'author'), name='unique_follow'),
             models.CheckConstraint(check=~models.Q(user=models.F(
                 'author')), name='dont_follow_your_self'),
+        ]
+
+
+class Favorite(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='elector'
+    )
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        related_name='favorite'
+    )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=(
+                'user', 'recipe'), name='unique_favor'),
+        ]
+
+
+class Shopping_cart(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='shoper'
+    )
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        related_name='shoping'
+    )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=(
+                'user', 'recipe'), name='unique_shoping'),
         ]
