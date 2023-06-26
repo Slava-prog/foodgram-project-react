@@ -4,6 +4,7 @@ from .models import Recipe
 
 
 class RecipeFilter(filters.FilterSet):
+    "Фильтр для модели Recipe"
     author = filters.NumberFilter()
     tags = filters.CharFilter(
         field_name="tags",

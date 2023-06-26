@@ -14,6 +14,7 @@ CHOICES = (
 
 
 class Ingredient(models.Model):
+    "Класс ингредиентов для создания рецепта."
     name = models.CharField(max_length=25)
     measurement_unit = models.CharField(max_length=50)
 
@@ -22,6 +23,7 @@ class Ingredient(models.Model):
 
 
 class RecipeIngredient(models.Model):
+    "Класс, позволяющий указывать количество ингредиента для рецепта."
     ingredient = models.ForeignKey(
         Ingredient,
         on_delete=models.CASCADE,
@@ -37,6 +39,7 @@ class RecipeIngredient(models.Model):
 
 
 class Tag(models.Model):
+    "Таги для рецептов"
     name = models.CharField(max_length=200)
     color = ColorField(default='#FF0000')
     slug = models.SlugField(max_length=200, unique=True)
@@ -51,6 +54,7 @@ class Tag(models.Model):
 
 
 class Recipe(models.Model):
+    "Класс рецептов."
     pub_date = models.DateTimeField('Дата публикации', auto_now_add=True)
     author = models.ForeignKey(
         User, related_name='recipe',
@@ -86,6 +90,7 @@ class Recipe(models.Model):
 
 
 class Follow(models.Model):
+    "Класс для подписки на понравившегося пользователя."
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -107,6 +112,7 @@ class Follow(models.Model):
 
 
 class Favorite(models.Model):
+    "Добавление рецепта в избранное."
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -126,6 +132,7 @@ class Favorite(models.Model):
 
 
 class Shopping_cart(models.Model):
+    "Класс списка покупок."
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,

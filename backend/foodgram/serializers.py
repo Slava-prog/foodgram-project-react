@@ -25,7 +25,7 @@ class Base64ImageField(serializers.ImageField):
 
 
 class UserGETSerializer(serializers.ModelSerializer):
-    """Сериализатор для модели User."""
+    """Сериализатор для GET запросов модели User."""
     is_subscribed = serializers.SerializerMethodField()
 
     class Meta:
@@ -42,7 +42,7 @@ class UserGETSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    """Сериализатор для модели User."""
+    """Сериализатор для POST запросов модели User."""
     is_subscribed = serializers.SerializerMethodField()
 
     class Meta:
@@ -128,7 +128,7 @@ class IngredientSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Ingredient
-        fields = '__all__'
+        fields = ('id', 'name', 'measurement_unit')
 
 
 class RecipeIngredientSerializer(serializers.ModelSerializer):
@@ -156,7 +156,7 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class RecipeGETSerializer(serializers.ModelSerializer):
-    """Сериализатор для объектов класса Recipe для обработки GET-запросов"""
+    """Сериализатор для объектов класса Recipe для обработки GET-запросов."""
     tags = TagSerializer(many=True, read_only=True)
     ingridients = RecipeIngredientSerializer(many=True, read_only=True)
     author = UserGETSerializer(read_only=True)
@@ -180,7 +180,7 @@ class RecipeGETSerializer(serializers.ModelSerializer):
 
 class RecipePOSTSerializer(serializers.ModelSerializer):
     """Сериализатор для объектов класса Recipe
-    для обработки небезопасных запросов"""
+    для обработки небезопасных запросов."""
     tags = serializers.SlugRelatedField(
         many=True,
         slug_field='id',
@@ -188,7 +188,6 @@ class RecipePOSTSerializer(serializers.ModelSerializer):
     )
     ingredients = RecipeIngredientSerializer(many=True)
     image = Base64ImageField(required=False, allow_null=True)
-    # max_length=None, use_url=True
     author = serializers.SlugRelatedField(
         slug_field='username',
         read_only=True
@@ -227,7 +226,7 @@ class RecipePOSTSerializer(serializers.ModelSerializer):
 
 
 class FollowSerializer(serializers.ModelSerializer):
-    """Сериализатор для модели Tag."""
+    """Сериализатор для модели Follow."""
     author = UserSerializer(read_only=True)
     recipes = serializers.SerializerMethodField()
     recipes_count = serializers.SerializerMethodField()
@@ -245,7 +244,7 @@ class FollowSerializer(serializers.ModelSerializer):
 
 
 class FavoriteSerializer(serializers.ModelSerializer):
-    """Сериализатор для модели Tag."""
+    """Сериализатор для модели Favorite."""
     user = serializers.SlugRelatedField(
         slug_field='username',
         read_only=True
@@ -258,7 +257,7 @@ class FavoriteSerializer(serializers.ModelSerializer):
 
 
 class Shopping_cartSerializer(serializers.ModelSerializer):
-    """Сериализатор для модели Tag."""
+    """Сериализатор для модели Shopping_cart."""
     user = serializers.SlugRelatedField(
         slug_field='username',
         read_only=True

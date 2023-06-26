@@ -3,7 +3,7 @@ from rest_framework import serializers
 
 
 class Hex2NameColor(serializers.Field):
-
+    "Возврат удобочтимого цвета."
     def to_representation(self, value):
         return value
 
@@ -16,10 +16,12 @@ class Hex2NameColor(serializers.Field):
 
 
 def check_password(user, password):
+    "Проверка правильности пароля."
     return str(user.password) == str(password)
 
 
 def writing_shopping_cart(shopping_cart):
+    "Создание файла со списком покупок"
     shopping_list = {}
     with open('files/shopping_cart.txt', "w+") as file:
         file.write('Список покупок:'.encode('utf-8').decode('utf-8') + '\n')

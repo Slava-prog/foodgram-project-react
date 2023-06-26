@@ -3,17 +3,13 @@ from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
-# from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import AccessToken
 from django.http import FileResponse
 
 from .models import (Ingredient, Tag, Recipe, RecipeIngredient,
                      Follow, Favorite, Shopping_cart)
 from users.models import CustomUser
-# from .filters import TitleFilter
-# from .mixins import CreateDestroyListViewSet, CreateMixin
 from .permissions import IsAdminOrReadOnly
-# IsAdmin, IsAdminAuthororReadOnly
 from .serializers import (IngredientSerializer,
                           TagSerializer,
                           RecipeIngredientSerializer,
@@ -105,39 +101,6 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    '''@action(
-        methods=['GET', 'PATCH', 'DELETE'],
-        detail=False
-    )
-    def get_user(self, request, username):
-        user = get_object_or_404(CustomUser, username=username)
-        if request.method == "PATCH":
-            serializer = UserSerializer(user, data=request.data, partial=True)
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        elif request.method == "DELETE":
-            user.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        serializer = UserSerializer(user)
-        return Response(serializer.data, status=status.HTTP_200_OK)'''
-
-    '''@action(methods=['GET', 'PATCH'],
-            detail=False
-            )
-    def change_info(self, request):
-        serializer = UserSerializer(request.user)
-        if request.method == 'PATCH':
-            serializer = UserSerializer(
-                request.user,
-                data=request.data,
-                partial=True,
-            )
-            serializer.is_valid(raise_exception=True)
-            serializer.save(role=request.user.role)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.data)'''
-
     @action(
         methods=['GET'],
         detail=False
@@ -191,7 +154,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class IngredientViewSet(viewsets.ModelViewSet):
-    """Вьюсет для объектов класса Ingredient"""
+    """Вьюсет для объектов класса Ingredient."""
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     permission_classes = (IsAdminOrReadOnly,)
@@ -199,14 +162,14 @@ class IngredientViewSet(viewsets.ModelViewSet):
 
 
 class RecipeIngredientViewSet(viewsets.ModelViewSet):
-    """Вьюсет для объектов класса RecipeIngredient"""
+    """Вьюсет для объектов класса RecipeIngredient."""
     queryset = RecipeIngredient.objects.all()
     serializer_class = RecipeIngredientSerializer
     pagination_class = None
 
 
 class TagViewSet(viewsets.ModelViewSet):
-    """Вьюсет для объектов класса Tag"""
+    """Вьюсет для объектов класса Tag."""
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     permission_classes = (IsAdminOrReadOnly,)
@@ -214,7 +177,7 @@ class TagViewSet(viewsets.ModelViewSet):
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
-    """Вьюсет для объектов класса Recipe"""
+    """Вьюсет для объектов класса Recipe."""
     queryset = Recipe.objects.all()
     filterset_class = RecipeFilter
     pagination_class = LimitOffsetPagination
