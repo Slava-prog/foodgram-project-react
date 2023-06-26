@@ -9,15 +9,15 @@ class RecipeFilter(filters.FilterSet):
     tags = filters.CharFilter(
         field_name="tags",
         method='filter_tags'
-        )
+    )
     is_favorited = filters.NumberFilter(
         field_name="is_favorited",
         method='filter_is_favorited'
-        )
+    )
     is_in_shopping_cart = filters.NumberFilter(
         field_name="is_in_shopping_cart",
         method='filter_is_in_shopping_cart'
-        )
+    )
 
     class Meta:
         model = Recipe

@@ -6,7 +6,7 @@ from django.conf.urls.static import static
 from .views import (
     IngredientViewSet, TagViewSet,
     RecipeViewSet, UserViewSet, ObtainTokenViewSet
-    )
+)
 
 app_name = 'foodgram'
 
