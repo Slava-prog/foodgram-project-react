@@ -1,27 +1,12 @@
-import base64
 from django.core.exceptions import ValidationError
-from django.core.files.base import ContentFile
 from django.core.validators import RegexValidator
 from rest_framework import serializers
 
-from .models import (Ingredient,
-                     Tag,
-                     Recipe,
-                     RecipeIngredient,
-                     Follow,
-                     Favorite,
-                     Shopping_cart)
+from .fields import Base64ImageField
+from .models import (Ingredient, Favorite, Follow, Recipe,
+                     RecipeIngredient, ShoppingCart, Tag)
+from .utils import Hex2NameColor, is_subscribed
 from users.models import CustomUser
-from .utils import Hex2NameColor
-
-
-class Base64ImageField(serializers.ImageField):
-    def to_internal_value(self, data):
-        if isinstance(data, str) and data.startswith('data:image'):
-            format, imgstr = data.split(';base64,')
-            ext = format.split('/')[-1]
-            data = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
-        return super().to_internal_value(data)
 
 
 class UserGETSerializer(serializers.ModelSerializer):
@@ -36,9 +21,7 @@ class UserGETSerializer(serializers.ModelSerializer):
         )
 
     def get_is_subscribed(self, obj):
-        author = self.context.get('request').user
-        return Follow.objects.filter(
-            user=obj.id, author=author).exists()
+        return is_subscribed(self, obj)
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -53,9 +36,7 @@ class UserSerializer(serializers.ModelSerializer):
         )
 
     def get_is_subscribed(self, obj):
-        author = self.context.get('request').user
-        return Follow.objects.filter(
-            user=obj.id, author=author).exists()
+        return is_subscribed(self, obj)
 
 
 class SignUpSerializer(serializers.Serializer):
@@ -85,18 +66,18 @@ class SignUpSerializer(serializers.Serializer):
             username=data.get('username'),
             email=data.get('email'),
             password=data.get('password')
-        ):
+        ).exists():
             return data
 
         if data['username'].lower() == 'me':
             raise ValidationError(
                 message='Использовать имя "me" в качестве username запрещено!'
             )
-        if CustomUser.objects.filter(username=data.get('username')):
+        if CustomUser.objects.filter(username=data.get('username')).exists():
             raise serializers.ValidationError(
                 'Пользователь с таким "username" уже существует'
             )
-        if CustomUser.objects.filter(email=data.get('email')):
+        if CustomUser.objects.filter(email=data.get('email')).exists():
             raise serializers.ValidationError(
                 'Пользователь с таким "email" уже существует'
             )
@@ -170,12 +151,19 @@ class RecipeGETSerializer(serializers.ModelSerializer):
         exclude = ('pub_date',)
 
     def get_is_favorited(self, obj):
-        user = self.context.get('request').user
-        return Favorite.objects.filter(recipe=obj.id, user=user).exists()
+        try:
+            user = self.context.get('request').user
+            return Favorite.objects.filter(recipe=obj.id, user=user).exists()
+        except TypeError:
+            return False
 
     def get_is_in_shopping_cart(self, obj):
-        user = self.context.get('request').user
-        return Shopping_cart.objects.filter(recipe=obj.id, user=user).exists()
+        try:
+            user = self.context.get('request').user
+            return ShoppingCart.objects.filter(
+                recipe=obj.id, user=user).exists()
+        except TypeError:
+            return False
 
 
 class RecipePOSTSerializer(serializers.ModelSerializer):
@@ -197,32 +185,57 @@ class RecipePOSTSerializer(serializers.ModelSerializer):
         model = Recipe
         exclude = ('pub_date', )
 
-    def get_or_create_ingredients(self, ingredients, recipe):
+    def get_or_create_ingredients(self, ingredients_list, recipe):
         ingredient_list = []
-        for ingredient in ingredients:
-            amount = ingredient.pop('amount')
-            ingredient = ingredient.pop('ingredient')
+        for recipe_ingredient in ingredients_list:
+            amount = recipe_ingredient.get('amount')
+            ingredient = recipe_ingredient.get('ingredient')
             RecipeIngredient.objects.get_or_create(
                 ingredient=ingredient,
                 amount=amount,
             )
-            ingredient = RecipeIngredient.objects.get(
+            ingredient_list.append(RecipeIngredient.objects.get(
                 ingredient=ingredient,
-                amount=amount)
-            ingredient_list.append(ingredient)
+                amount=amount))
         recipe.ingredients.set(ingredient_list)
 
     def create(self, validated_data):
         if 'ingredients' not in self.initial_data:
             recipe = Recipe.objects.create(**validated_data)
             return recipe
-        ingredients = validated_data.pop('ingredients')
+        ingredients_list = validated_data.pop('ingredients')
         tags = validated_data.pop("tags")
         recipe = Recipe.objects.create(**validated_data)
-        self.get_or_create_ingredients(ingredients, recipe)
+        self.get_or_create_ingredients(ingredients_list, recipe)
         recipe.tags.set(tags)
         recipe.save()
         return recipe
+
+    def update(self, instance, validated_data):
+        ingredients_list = validated_data.pop('ingredients')
+        tags = validated_data.pop("tags")
+        Recipe.objects.filter(name=instance).update(**validated_data)
+        instance.tags.clear()
+        instance.ingredients.clear()
+        self.get_or_create_ingredients(ingredients_list, instance)
+        instance.tags.set(tags)
+        return instance
+
+    def to_representation(self, instance):
+        serializer = RecipeGETSerializer(instance, context=self.context)
+        return serializer.data
+
+    def validate(self, data):
+        ingredient_list = []
+        list_of_ingredients = data.get('ingredients')
+        for ingredient_to_recipe in list_of_ingredients:
+            valid_ingredient = ingredient_to_recipe.get('ingredient')
+            if valid_ingredient in ingredient_list:
+                raise serializers.ValidationError(
+                    'Вы указали один и тот же ингредиент несколько раз'
+                )
+            ingredient_list.append(valid_ingredient)
+        return data
 
 
 class FollowSerializer(serializers.ModelSerializer):
@@ -256,8 +269,8 @@ class FavoriteSerializer(serializers.ModelSerializer):
         fields = ('user', 'recipe')
 
 
-class Shopping_cartSerializer(serializers.ModelSerializer):
-    """Сериализатор для модели Shopping_cart."""
+class ShoppingCartSerializer(serializers.ModelSerializer):
+    """Сериализатор для модели ShoppingCart."""
     user = serializers.SlugRelatedField(
         slug_field='username',
         read_only=True
@@ -265,5 +278,5 @@ class Shopping_cartSerializer(serializers.ModelSerializer):
     recipe = RecipeGETSerializer(read_only=True)
 
     class Meta:
-        model = Shopping_cart
+        model = ShoppingCart
         fields = ('user', 'recipe')

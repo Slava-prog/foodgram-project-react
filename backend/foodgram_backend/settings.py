@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
-import os
+# import os
 from pathlib import Path
 from datetime import timedelta
 
@@ -26,7 +26,9 @@ SECRET_KEY = 'django-insecure-*0)^!2oo7!=a7rl@i8#d)h9&*o@6)z7snxugallj_!oumf8=0(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '192.168.56.102', '0.0.0.0']
+ALLOWED_HOSTS = [
+    '127.0.0.1', 'localhost', '192.168.56.102',
+    '0.0.0.0', '84.252.138.51', 'slavas-practicum.ddns.net']
 
 
 # Application definition
@@ -80,7 +82,7 @@ WSGI_APPLICATION = 'foodgram_backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
+'''DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv('POSTGRES_DB', 'django'),
@@ -88,6 +90,13 @@ DATABASES = {
         'PASSWORD': os.getenv('POSTGRES_PASSWORD', ''),
         'HOST': os.getenv('DB_HOST', ''),
         'PORT': os.getenv('DB_PORT', 5432)
+    }
+}'''
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 

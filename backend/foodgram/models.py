@@ -1,6 +1,6 @@
+from colorfield.fields import ColorField
 from django.contrib.auth import get_user_model
 from django.db import models
-from colorfield.fields import ColorField
 from slugify import slugify
 
 User = get_user_model()
@@ -17,8 +17,13 @@ class Ingredient(models.Model):
         verbose_name='Единица измерения'
     )
 
+    class Meta:
+        ordering = ['-id']
+        verbose_name = 'Ингредиент'
+        verbose_name_plural = 'Ингредиенты'
+
     def __str__(self):
-        return f'{self.name} {self.measurement_unit}'
+        return f'{self.name} - {self.measurement_unit}'
 
 
 class RecipeIngredient(models.Model):
@@ -30,6 +35,11 @@ class RecipeIngredient(models.Model):
         verbose_name='Ингредиент'
     )
     amount = models.PositiveIntegerField(verbose_name='Количество')
+
+    class Meta:
+        ordering = ['-id']
+        verbose_name = 'Ингредиент рецепта'
+        verbose_name_plural = 'Ингредиенты рецептов'
 
     def __str__(self):
         name = self.ingredient.name
@@ -58,6 +68,11 @@ class Tag(models.Model):
         if not self.slug:
             self.slug = slugify(self.title)
         return super().save(*args, **kwargs)
+
+    class Meta:
+        ordering = ['-id']
+        verbose_name = 'Тег'
+        verbose_name_plural = 'Теги'
 
     def __str__(self):
         return self.name
@@ -108,9 +123,11 @@ class Recipe(models.Model):
 
     class Meta:
         ordering = ['-pub_date']
+        verbose_name = 'Рецепт'
+        verbose_name_plural = 'Рецепты'
 
     def __str__(self):
-        return f'{self.name} мин.'
+        return f'{self.name}'
 
 
 class Follow(models.Model):
@@ -129,6 +146,9 @@ class Follow(models.Model):
     )
 
     class Meta:
+        ordering = ['-id']
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
         constraints = [
             models.UniqueConstraint(fields=(
                 'user', 'author'), name='unique_follow'),
@@ -153,13 +173,16 @@ class Favorite(models.Model):
     )
 
     class Meta:
+        ordering = ['-id']
+        verbose_name = 'Избранное'
+        verbose_name_plural = 'Избранное'
         constraints = [
             models.UniqueConstraint(fields=(
                 'user', 'recipe'), name='unique_favor'),
         ]
 
 
-class Shopping_cart(models.Model):
+class ShoppingCart(models.Model):
     "Класс списка покупок."
     user = models.ForeignKey(
         User,
@@ -175,6 +198,9 @@ class Shopping_cart(models.Model):
     )
 
     class Meta:
+        ordering = ['-id']
+        verbose_name = 'Список покупок'
+        verbose_name_plural = 'Списки покупок'
         constraints = [
             models.UniqueConstraint(fields=(
                 'user', 'recipe'), name='unique_shoping'),

@@ -1,5 +1,8 @@
 import webcolors
+
 from rest_framework import serializers
+
+from .models import Follow
 
 
 class Hex2NameColor(serializers.Field):
@@ -13,6 +16,15 @@ class Hex2NameColor(serializers.Field):
         except ValueError:
             raise serializers.ValidationError('Для этого цвета нет имени')
         return data
+
+
+def is_subscribed(self, obj):
+    try:
+        author = self.context.get('request').user
+        return Follow.objects.filter(
+            user=obj.id, author=author).exists()
+    except TypeError:
+        return False
 
 
 def check_password(user, password):

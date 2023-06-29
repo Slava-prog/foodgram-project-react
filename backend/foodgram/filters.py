@@ -30,12 +30,10 @@ class RecipeFilter(filters.FilterSet):
         user = self.request.user
         if mean == 1:
             return queryset.filter(favorite__user=user)
-        else:
-            return queryset.exclude(favorite__user=user)
+        return queryset.exclude(favorite__user=user)
 
     def filter_is_in_shopping_cart(self, queryset, is_in_shopping_cart, mean):
         user = self.request.user
         if mean == 1:
             return queryset.filter(shoping__user=user)
-        else:
-            return queryset.exclude(shoping__user=user)
+        return queryset.exclude(shoping__user=user)
