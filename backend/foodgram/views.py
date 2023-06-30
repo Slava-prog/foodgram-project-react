@@ -60,7 +60,8 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(
         methods=['POST'],
-        detail=False
+        detail=False,
+        permission_classes=(permissions.IsAuthenticated,)
     )
     def set_password(self, request, *args, **kwargs):
         serializer = UserSetPasswordSerializer(data=request.data)
@@ -204,7 +205,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @action(
-        methods=['GET', ],
+        methods=['GET'],
         detail=False,
         permission_classes=(permissions.IsAuthenticated,)
     )

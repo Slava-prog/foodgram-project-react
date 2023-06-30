@@ -10,6 +10,8 @@ class CustomUser(AbstractUser):
         (USER, 'Пользователь'),
         (ADMIN, 'Администратор')
     ]
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ('username', 'first_name', 'last_name')
     username = models.CharField(
         max_length=150,
         unique=True,
