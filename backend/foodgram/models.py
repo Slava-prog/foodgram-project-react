@@ -44,8 +44,8 @@ class RecipeIngredient(models.Model):
     def __str__(self):
         name = self.ingredient.name
         amount = self.amount
-        ingredient = self.ingredient.measurement_unit
-        return f'{name} {amount} {ingredient}'
+        unit = self.ingredient.measurement_unit
+        return f'{name} {amount} {unit}'
 
 
 class Tag(models.Model):

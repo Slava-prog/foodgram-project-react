@@ -61,6 +61,12 @@ class SignUpSerializer(serializers.Serializer):
             )
         ])
 
+    '''def create(self, validated_data):
+        user = CustomUser.objects.create(**validated_data)
+        user.set_password('password')
+        user.save()
+        return user'''
+
     def validate(self, data):
         if CustomUser.objects.filter(
             username=data.get('username'),

@@ -1,5 +1,6 @@
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404
+from djoser.views import UserViewSet
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.pagination import LimitOffsetPagination
@@ -42,7 +43,7 @@ class ObtainTokenViewSet(viewsets.ModelViewSet):
 
         if check_password(user, password):
             return Response(
-                {'token': str(AccessToken.for_user(user))},
+                {'auth_token': str(AccessToken.for_user(user))},
                 status=status.HTTP_200_OK
             )
         return Response(
@@ -51,7 +52,7 @@ class ObtainTokenViewSet(viewsets.ModelViewSet):
         )
 
 
-class UserViewSet(viewsets.ModelViewSet):
+class UserGetPostViewSet(UserViewSet):
     """Вьюсет для обьектов модели User."""
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
