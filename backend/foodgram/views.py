@@ -1,9 +1,9 @@
+from django_filters.rest_framework import DjangoFilterBackend
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import permissions, status, viewsets, filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework_simplejwt.tokens import AccessToken
 
 from .filters import RecipeFilter, IngredientFilter
@@ -11,9 +11,9 @@ from .models import (Ingredient, Favorite, Follow, Recipe,
                      RecipeIngredient, ShoppingCart, Tag)
 from .pagination import PageLimitPagination
 from .permissions import IsAdminOrReadOnly
-from .serializers import (IngredientSerializer,
-                          FavoriteSerializer,
+from .serializers import (FavoriteSerializer,
                           FollowSerializer,
+                          IngredientSerializer,
                           ObtainTokenSerializer,
                           RecipeIngredientSerializer,
                           RecipeGETSerializer,

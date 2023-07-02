@@ -1,10 +1,8 @@
 import pandas as pd
-
 from django.core.management.base import BaseCommand
 from pathlib import Path
 
 from foodgram.models import Ingredient
-
 
 dir = Path(__file__).resolve().parent
 

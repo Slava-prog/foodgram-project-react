@@ -3,10 +3,10 @@ from django.core.validators import RegexValidator
 from rest_framework import serializers
 
 from .fields import Base64ImageField
-from .models import (Ingredient, Favorite, Follow, Recipe,
+from .models import (Favorite, Follow, Ingredient, Recipe,
                      RecipeIngredient, ShoppingCart, Tag)
-from .utils import Hex2NameColor, is_subscribed
 from users.models import CustomUser
+from .utils import Hex2NameColor, is_subscribed
 
 
 class UserGETSerializer(serializers.ModelSerializer):

@@ -2,8 +2,8 @@ from django.urls import path, include
 from rest_framework import routers
 
 from .views import (
-    IngredientViewSet, TagViewSet, LogoutViewSet,
-    RecipeViewSet, UserGetPostViewSet, ObtainTokenViewSet
+    IngredientViewSet, LogoutViewSet, ObtainTokenViewSet,
+    RecipeViewSet, TagViewSet, UserGetPostViewSet
 )
 
 app_name = 'foodgram'
