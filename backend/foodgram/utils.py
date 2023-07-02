@@ -22,7 +22,7 @@ def is_subscribed(self, obj):
     try:
         author = self.context.get('request').user
         return Follow.objects.filter(
-            user=obj.id, author=author).exists()
+            author=obj.id, user=author).exists()
     except TypeError:
         return False
 
@@ -35,7 +35,7 @@ def check_password(user, password):
 def writing_shopping_cart(shopping_cart):
     "Создание файла со списком покупок"
     shopping_list = {}
-    with open('files/shopping_cart.txt', "w+") as file:
+    with open('shopping_cart.txt', "w+") as file:
         file.write('Список покупок:'.encode('utf-8').decode('utf-8') + '\n')
         for name, amount, unit in shopping_cart:
             if name not in shopping_list:

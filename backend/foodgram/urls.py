@@ -1,10 +1,8 @@
-from django.conf import settings
-from django.conf.urls.static import static
 from django.urls import path, include
 from rest_framework import routers
 
 from .views import (
-    IngredientViewSet, TagViewSet,
+    IngredientViewSet, TagViewSet, LogoutViewSet,
     RecipeViewSet, UserGetPostViewSet, ObtainTokenViewSet
 )
 
@@ -22,11 +20,7 @@ urlpatterns = [
     path('auth/token/login/',
          ObtainTokenViewSet.as_view({'post': 'create'}),
          name='token'),
-    path('auth/token/logout/', include('djoser.urls')),
-    path('auth/token/logout/', include('djoser.urls.jwt')),
+    path('auth/token/logout/',
+         LogoutViewSet.as_view({'post': 'post'}),
+         name='token'),
 ]
-
-if settings.DEBUG:
-    urlpatterns += static(
-        settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
-    )

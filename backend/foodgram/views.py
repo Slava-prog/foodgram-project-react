@@ -1,15 +1,17 @@
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404
 from djoser.views import UserViewSet
-from rest_framework import permissions, status, viewsets
+from rest_framework import permissions, status, viewsets, filters
 from rest_framework.decorators import action
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework_simplejwt.tokens import AccessToken
 
-from .filters import RecipeFilter
+from .filters import RecipeFilter, IngredientFilter
 from .models import (Ingredient, Favorite, Follow, Recipe,
                      RecipeIngredient, ShoppingCart, Tag)
+from .pagination import PageLimitPagination
 from .permissions import IsAdminOrReadOnly
 from .serializers import (IngredientSerializer,
                           TagSerializer,
@@ -26,6 +28,14 @@ from .serializers import (IngredientSerializer,
                           ShoppingCartSerializer)
 from .utils import check_password, writing_shopping_cart
 from users.models import CustomUser
+
+
+class LogoutViewSet(viewsets.ModelViewSet):
+    """Вьюсет для получения пользователем JWT токена."""
+    queryset = CustomUser.objects.all()
+    def post(self, request, *args, **kwargs):
+        return Response({'auth_token': ''},
+            status=status.HTTP_204_NO_CONTENT)
 
 
 class ObtainTokenViewSet(viewsets.ModelViewSet):
@@ -52,11 +62,11 @@ class ObtainTokenViewSet(viewsets.ModelViewSet):
         )
 
 
-class UserGetPostViewSet(UserViewSet):
+class UserGetPostViewSet(viewsets.ModelViewSet):
     """Вьюсет для обьектов модели User."""
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
-    pagination_class = LimitOffsetPagination
+    pagination_class = PageLimitPagination
     permission_classes = (permissions.AllowAny,)
 
     @action(
@@ -109,7 +119,7 @@ class UserGetPostViewSet(UserViewSet):
         detail=False,
         permission_classes=(permissions.IsAuthenticated,)
     )
-    def subscriptions(self, request, *args, **kwargs):
+    def subscriptions(self, request):
         queryset = Follow.objects.filter(user=self.request.user)
         pages = self.paginate_queryset(queryset)
         serializer = FollowSerializer(
@@ -149,9 +159,7 @@ class UserGetPostViewSet(UserViewSet):
         elif request.method == "DELETE":
             if Follow.objects.filter(user=user, author=author).exists():
                 Follow.objects.get(user=user, author=author).delete()
-                return Response(
-                    'Вы успешно отписались',
-                    status=status.HTTP_204_NO_CONTENT)
+                return Response(status=status.HTTP_204_NO_CONTENT)
             return Response(
                 {'errors': 'А подписки то и не было...'},
                 status=status.HTTP_400_BAD_REQUEST)
@@ -167,7 +175,9 @@ class IngredientViewSet(viewsets.ModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     permission_classes = (IsAdminOrReadOnly,)
+    filter_backends = (DjangoFilterBackend, filters.SearchFilter)
     pagination_class = None
+    filterset_class = IngredientFilter
 
 
 class RecipeIngredientViewSet(viewsets.ModelViewSet):
@@ -189,7 +199,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     """Вьюсет для объектов класса Recipe."""
     queryset = Recipe.objects.all()
     filterset_class = RecipeFilter
-    pagination_class = LimitOffsetPagination
+    pagination_class = PageLimitPagination
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
     def get_serializer_class(self):
@@ -212,6 +222,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     )
     def download_shopping_cart(self, request, *args, **kwargs):
         user = self.request.user
+        print(ShoppingCart.objects.filter(user=user))
         if ShoppingCart.objects.filter(user=user).exists():
             shopping_cart = Recipe.objects.filter(
                 shoping__user=user).values_list(
@@ -220,7 +231,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                     'ingredients__ingredient__measurement_unit')
             writing_shopping_cart(shopping_cart)
             return FileResponse(
-                open('files/shopping_cart.txt', 'rb'),
+                open('shopping_cart.txt', 'rb'),
                 as_attachment=True)
         return Response(
             {'errors': 'Список покупок пуст'},
