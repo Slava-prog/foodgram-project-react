@@ -1,9 +1,7 @@
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404
-from djoser.views import UserViewSet
 from rest_framework import permissions, status, viewsets, filters
 from rest_framework.decorators import action
-from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework_simplejwt.tokens import AccessToken
@@ -14,18 +12,18 @@ from .models import (Ingredient, Favorite, Follow, Recipe,
 from .pagination import PageLimitPagination
 from .permissions import IsAdminOrReadOnly
 from .serializers import (IngredientSerializer,
-                          TagSerializer,
+                          FavoriteSerializer,
+                          FollowSerializer,
+                          ObtainTokenSerializer,
                           RecipeIngredientSerializer,
                           RecipeGETSerializer,
                           RecipePOSTSerializer,
+                          SignUpSerializer,
+                          ShoppingCartSerializer,
+                          TagSerializer,
                           UserSerializer,
                           UserGETSerializer,
-                          UserSetPasswordSerializer,
-                          SignUpSerializer,
-                          ObtainTokenSerializer,
-                          FollowSerializer,
-                          FavoriteSerializer,
-                          ShoppingCartSerializer)
+                          UserSetPasswordSerializer)
 from .utils import check_password, writing_shopping_cart
 from users.models import CustomUser
 
@@ -33,9 +31,10 @@ from users.models import CustomUser
 class LogoutViewSet(viewsets.ModelViewSet):
     """Вьюсет для получения пользователем JWT токена."""
     queryset = CustomUser.objects.all()
+
     def post(self, request, *args, **kwargs):
         return Response({'auth_token': ''},
-            status=status.HTTP_204_NO_CONTENT)
+                        status=status.HTTP_204_NO_CONTENT)
 
 
 class ObtainTokenViewSet(viewsets.ModelViewSet):
