@@ -105,14 +105,6 @@ class Recipe(models.Model):
         Tag,
         verbose_name='Тег'
     )
-    is_favorited = models.BooleanField(
-        default=False,
-        verbose_name='В избранном'
-    )
-    is_in_shopping_cart = models.BooleanField(
-        default=False,
-        verbose_name='В списке покупок'
-    )
     ingredients = models.ManyToManyField(
         RecipeIngredient,
         verbose_name='Ингредиенты'

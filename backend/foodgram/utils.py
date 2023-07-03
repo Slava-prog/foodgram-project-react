@@ -1,23 +1,15 @@
-import webcolors
-from rest_framework import serializers
+import io
 
-from .models import Follow
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
+from rest_framework import status
+from rest_framework.response import Response
 
-
-class Hex2NameColor(serializers.Field):
-    "Возврат удобочтимого цвета."
-    def to_representation(self, value):
-        return value
-
-    def to_internal_value(self, data):
-        try:
-            data = webcolors.hex_to_name(data)
-        except ValueError:
-            raise serializers.ValidationError('Для этого цвета нет имени')
-        return data
+from .models import Follow, Recipe
 
 
 def is_subscribed(self, obj):
+    "Проверка подписки для пользователя."
     try:
         author = self.context.get('request').user
         return Follow.objects.filter(
@@ -32,16 +24,50 @@ def check_password(user, password):
 
 
 def writing_shopping_cart(shopping_cart):
-    "Создание файла со списком покупок"
+    "Создание файла со списком покупок."
     shopping_list = {}
-    with open('shopping_cart.txt', "w+") as file:
-        file.write('Список покупок:'.encode('utf-8').decode('utf-8') + '\n')
-        for name, amount, unit in shopping_cart:
-            if name not in shopping_list:
-                shopping_list[name] = {'amount': amount, 'unit': unit}
-            else:
-                shopping_list[name]['amount'] += amount
-        for name, data in shopping_list.items():
-            line = f'{name} - {data["amount"]} {data["unit"]}'
-            file.write(line.encode('utf-8').decode('utf-8') + '\n')
-        file.close()
+    file = io.StringIO()
+    file.write('Список покупок:'.encode('utf-8').decode('utf-8') + '\n')
+    for ingredient in shopping_cart:
+        name = ingredient['ingredients__ingredient__name']
+        measurement_unit = ingredient[
+            'ingredients__ingredient__measurement_unit']
+        amount = ingredient['amount']
+        ingredient_str = f'{name}, {measurement_unit}'
+        shopping_list[ingredient_str] = amount
+    for name, data in shopping_list.items():
+        line = f'{name} - {data}'
+        file.write(line.encode('utf-8').decode('utf-8') + '\n')
+    response = HttpResponse(
+        file.getvalue(), content_type="text/plain", charset="utf-8")
+    response['Content-Disposition'] = 'attachment'
+    return response
+
+
+def add_delete_shopping_cart_favorite(self, request, Model,
+                                      Serializer, *args, **kwargs):
+    "Добавление и отбавление списка покупок и избранного."
+    recipe = get_object_or_404(Recipe, id=kwargs.get('pk'))
+    user = self.request.user
+    if request.method == 'POST':
+        if Model.objects.filter(user=user, recipe=recipe).exists():
+            return Response(
+                {'errors': 'Данный рецепт уже тут...'},
+                status=status.HTTP_400_BAD_REQUEST)
+        serializer = Serializer(
+            data=request.data,
+            context={'request': request, 'recipe': recipe},
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save(recipe=recipe, user=user)
+        return Response(
+            {'Рецепт успешно добавлен': serializer.data},
+            status=status.HTTP_200_OK)
+    if Model.objects.filter(user=user, recipe=recipe).exists():
+        Model.objects.get(user=user, recipe=recipe).delete()
+        return Response(
+            'Рецепт успешно удален',
+            status=status.HTTP_204_NO_CONTENT)
+    return Response(
+        {'errors': 'А рецепта то и не было...'},
+        status=status.HTTP_400_BAD_REQUEST)

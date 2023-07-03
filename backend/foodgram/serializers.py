@@ -2,11 +2,11 @@ from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from rest_framework import serializers
 
-from .fields import Base64ImageField
+from .fields import Base64ImageField, Hex2NameColor
 from .models import (Favorite, Follow, Ingredient, Recipe,
                      RecipeIngredient, ShoppingCart, Tag)
 from users.models import CustomUser
-from .utils import Hex2NameColor, is_subscribed
+from .utils import is_subscribed
 
 
 class UserGETSerializer(serializers.ModelSerializer):
@@ -132,7 +132,6 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = RecipeIngredient
-        # depth = 1
         fields = ('id', 'name', 'measurement_unit', 'amount')
 
 
@@ -165,8 +164,8 @@ class RecipeGETSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        # depth = 1
-        exclude = ('pub_date',)
+        fields = ('id', 'name', 'text', 'author', 'image', 'tags',
+                  'ingredients', 'is_favorited', 'is_in_shopping_cart')
 
     def get_is_favorited(self, obj):
         try:
@@ -193,7 +192,7 @@ class RecipePOSTSerializer(serializers.ModelSerializer):
         queryset=Tag.objects.all()
     )
     ingredients = RecipeIngredientSerializer(many=True)
-    image = Base64ImageField(required=True, allow_null=False)
+    image = Base64ImageField(max_length=None, use_url=True)
     author = serializers.SlugRelatedField(
         slug_field='username',
         read_only=True
