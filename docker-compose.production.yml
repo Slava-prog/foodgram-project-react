@@ -29,10 +29,7 @@ services:
     image: slavaprog/foodgram_gateway
     env_file: .env
     volumes:
-      - static_volume:/var/html/static/
+      - static_volume:/staticfiles/
       - media:/media/foodgram/images
     ports:
       - 8000:80
-    depends_on:
-      - frontend
-      - backend
