@@ -1,5 +1,5 @@
 # build env
-FROM node:13.14.0-alias as build
+FROM node:13.14.0-slim as build
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
