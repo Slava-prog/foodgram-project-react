@@ -67,7 +67,7 @@ jobs:
     - name: Set up nodeJS
       uses: actions/setup-node@v3
       with:
-        node-version: 13.14.0-slim
+        node-version: 13.14.0
     - name: Install dependencies
       run: |
         cd frontend/
