@@ -23,8 +23,6 @@ services:
     image: slavaprog/foodgram_frontend
     env_file: .env
     command: cp -r /app/result_build/. /frontend_static/
-    volumes:
-      - static_volume:/
   gateway:
     image: slavaprog/foodgram_gateway
     env_file: .env
