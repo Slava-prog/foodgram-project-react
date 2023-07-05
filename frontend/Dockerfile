@@ -6,7 +6,7 @@ COPY package-lock.json package-lock.json
 
 RUN npm ci
 
-COPY . .
+COPY . ./
 RUN npm run build
 RUN npm install --global http-server
 
