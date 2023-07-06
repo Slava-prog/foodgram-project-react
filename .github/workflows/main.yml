@@ -67,7 +67,7 @@ jobs:
     - name: Set up nodeJS
       uses: actions/setup-node@v3
       with:
-        node-version: 13.14.0
+        node-version: 13.12.0
     - name: Install dependencies
       run: |
         cd frontend/
@@ -144,7 +144,6 @@ jobs:
         script: |
           cd foodgram-project-react
           sudo docker compose -f docker-compose.production.yml down
-          sudo docker compose -f docker-compose.production.yml pull
           sudo docker compose -f docker-compose.production.yml up -d
           sudo docker compose -f docker-compose.production.yml exec backend python manage.py migrate
           sudo docker compose -f docker-compose.production.yml exec backend python manage.py collectstatic
