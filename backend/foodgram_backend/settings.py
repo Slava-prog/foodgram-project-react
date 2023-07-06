@@ -129,3 +129,5 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Token',),
 }
 AUTH_USER_MODEL = 'users.CustomUser'
+
+CSRF_TRUSTED_ORIGINS = ['192.168.56.102', '84.252.138.51', 'slavas-practicum.ddns.net']

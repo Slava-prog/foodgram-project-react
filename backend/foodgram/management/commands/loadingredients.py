@@ -5,7 +5,7 @@ from pathlib import Path
 
 from foodgram.models import Ingredient
 
-dir = Path(__file__).resolve().parent
+dir = Path(__file__).resolve()
 
 
 class Command(BaseCommand):
