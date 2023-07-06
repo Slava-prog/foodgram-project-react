@@ -28,10 +28,12 @@ INSTALLED_APPS = [
     'django_filters',
     'foodgram.apps.FoodgramConfig',
     'users.apps.UsersConfig',
-    'colorfield'
+    'colorfield',
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -72,13 +74,6 @@ DATABASES = {
     }
 }
 
-'''DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}'''
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -108,7 +103,6 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'collected_static'
 
 MEDIA_URL = '/media/'
-# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -130,5 +124,4 @@ SIMPLE_JWT = {
 }
 AUTH_USER_MODEL = 'users.CustomUser'
 
-if not DEBUG:
-    CSRF_TRUSTED_ORIGINS = ['https://slavas-practicum.ddns.net']
+CORS_ORIGIN_WHITELIST = ['https://slavas-practicum.ddns.net']
