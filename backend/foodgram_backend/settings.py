@@ -130,4 +130,4 @@ SIMPLE_JWT = {
 }
 AUTH_USER_MODEL = 'users.CustomUser'
 
-CSRF_TRUSTED_ORIGINS = ['192.168.56.102', '84.252.138.51', 'slavas-practicum.ddns.net']
+CSRF_TRUSTED_ORIGINS = 'https://slavas-practicum.ddns.net/'
