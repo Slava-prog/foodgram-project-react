@@ -10,7 +10,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv()
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure')
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     '127.0.0.1', 'localhost', '192.168.56.102',
@@ -124,4 +124,4 @@ SIMPLE_JWT = {
 }
 AUTH_USER_MODEL = 'users.CustomUser'
 
-CORS_ORIGIN_WHITELIST = ['https://slavas-practicum.ddns.net']
+CORS_ORIGIN_WHITELIST = ['http://localhost:8000', 'https://slavas-practicum.ddns.net']
