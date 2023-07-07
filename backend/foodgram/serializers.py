@@ -39,71 +39,6 @@ class UserSerializer(serializers.ModelSerializer):
         return is_subscribed(self, obj)
 
 
-'''class SignUpSerializer(serializers.Serializer):
-    """Сериализатор для создания объектов класса User."""
-    username = serializers.CharField(
-        required=True,
-        max_length=150,
-        validators=[
-            RegexValidator(
-                regex=r'^[\w.@+-]+$',
-                message='Имя пользователя содержит недопустимый символ'
-            )
-        ])
-    email = serializers.EmailField(required=True, max_length=254)
-    password = serializers.CharField(
-        required=True,
-        max_length=150,
-        validators=[
-            RegexValidator(
-                regex=r'^[\w.@+-]+$',
-                message='Пароль пользователя содержит недопустимый символ'
-            )
-        ])
-
-    def validate(self, data):
-        if CustomUser.objects.filter(
-            username=data.get('username'),
-            email=data.get('email'),
-            password=data.get('password')
-        ).exists():
-            return data
-
-        if data['username'].lower() == 'me':
-            raise ValidationError(
-                message='Использовать имя "me" в качестве username запрещено!'
-            )
-        if CustomUser.objects.filter(username=data.get('username')).exists():
-            raise serializers.ValidationError(
-                'Пользователь с таким "username" уже существует'
-            )
-        if CustomUser.objects.filter(email=data.get('email')).exists():
-            raise serializers.ValidationError(
-                'Пользователь с таким "email" уже существует'
-            )
-        return data'''
-
-
-'''class ObtainTokenSerializer(serializers.ModelSerializer):
-    """Сериализатор для объектов класса User при получении токена."""
-    email = serializers.EmailField(max_length=254)
-    password = serializers.CharField(max_length=150, required=True)
-
-    class Meta:
-        model = CustomUser
-        fields = ('email', 'password')'''
-
-
-'''class UserSetPasswordSerializer(serializers.ModelSerializer):
-    """Сериализатор для объектов класса User при смене пароля."""
-    new_password = serializers.CharField(max_length=150, required=True)
-    current_password = serializers.CharField(max_length=150, required=True)
-
-    class Meta:
-        model = CustomUser
-        fields = ('new_password', 'current_password')'''
-
-
 class IngredientSerializer(serializers.ModelSerializer):
     """Сериализатор для модели Ingredient."""
 
@@ -164,7 +99,7 @@ class RecipeGETSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = ('id', 'name', 'text', 'author', 'image', 'tags',
+        fields = ('id', 'name', 'text', 'author', 'image', 'tags', 'cooking_time',
                   'ingredients', 'is_favorited', 'is_in_shopping_cart')
 
     def get_is_favorited(self, obj):

@@ -22,15 +22,3 @@ urlpatterns = [
     path('', include(router_v1.urls)),
     path('auth/', include('djoser.urls.authtoken')),
 ]
-
-'''path('auth/token/login/',
-         ObtainTokenViewSet.as_view({'post': 'create'}),
-         name='token'),
-    path('auth/token/logout/',
-         LogoutViewSet.as_view({'post': 'post'}),
-         name='token'),'''
-
-'''path('users/<int:user_id>/subscribe/',
-         UserGetPostViewSet.as_view('post': 'subscribe'), name='subscribe'),
-    path('users/subscriptions/', UserGetPostViewSet.as_view('get': 'subscriptions'),
-         name='subscriptions'),'''

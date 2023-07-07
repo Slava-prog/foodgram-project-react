@@ -14,53 +14,17 @@ from .permissions import IsAdminOrReadOnly
 from .serializers import (FavoriteSerializer,
                           FollowSerializer,
                           IngredientSerializer,
-                          # ObtainTokenSerializer,
                           RecipeIngredientSerializer,
                           RecipeGETSerializer,
                           RecipePOSTSerializer,
-                          # SignUpSerializer,
                           ShoppingCartSerializer,
                           TagSerializer,
                           UserSerializer,
                           UserGETSerializer,
-                          # UserSetPasswordSerializer
                           )
 from .utils import (check_password, writing_shopping_cart,
                     add_delete_shopping_cart_favorite)
 from users.models import CustomUser
-
-
-'''class LogoutViewSet(viewsets.ModelViewSet):
-    """Вьюсет для получения пользователем JWT токена."""
-    queryset = CustomUser.objects.all()
-
-    def post(self, request, *args, **kwargs):
-        return Response({'auth_token': ''},
-                        status=status.HTTP_204_NO_CONTENT)'''
-
-
-'''class ObtainTokenViewSet(viewsets.ModelViewSet):
-    """Вьюсет для получения пользователем JWT токена."""
-    queryset = CustomUser.objects.all()
-    serializer_class = ObtainTokenSerializer
-    permission_classes = (permissions.AllowAny,)
-
-    def create(self, request, *args, **kwargs):
-        serializer = ObtainTokenSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        email = serializer.validated_data.get('email')
-        password = serializer.validated_data.get('password')
-        user = get_object_or_404(CustomUser, email=email)
-
-        if check_password(user, password):
-            return Response(
-                {'auth_token': str(AccessToken.for_user(user))},
-                status=status.HTTP_200_OK
-            )
-        return Response(
-            {'password': 'Пароль неверен'},
-            status=status.HTTP_400_BAD_REQUEST
-        )'''
 
 
 class UserGetPostViewSet(viewsets.ModelViewSet):
@@ -69,51 +33,6 @@ class UserGetPostViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     pagination_class = PageLimitPagination
     permission_classes = (permissions.AllowAny,)
-
-    '''@action(
-        methods=['POST'],
-        detail=False,
-        permission_classes=(permissions.IsAuthenticated,)
-    )
-    def set_password(self, request, *args, **kwargs):
-        serializer = UserSetPasswordSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        new_password = serializer.validated_data.get('new_password')
-        password = serializer.validated_data.get('current_password')
-        user = self.request.user
-
-        if check_password(user, password):
-            user.password = new_password
-            user.save()
-            return Response(
-                'Пароль успешно изменен',
-                status=status.HTTP_200_OK
-            )
-        return Response(
-            {'password': 'Пароль неверен'},
-            status=status.HTTP_400_BAD_REQUEST
-        )'''
-
-    '''@action(
-        methods=['GET'],
-        detail=False,
-        permission_classes=(permissions.IsAuthenticated,)
-    )
-    def me(self, request):
-        user = self.request.user
-        serializer = UserGETSerializer(user, context={'request': request})
-        return Response(serializer.data, status=status.HTTP_200_OK)'''
-
-    '''@action(
-        methods=['POST'],
-        detail=False,
-        permission_classes=(permissions.AllowAny,)
-    )
-    def create_user(self, request):
-        serializer = SignUpSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)'''
 
     @action(
         methods=['GET'],
