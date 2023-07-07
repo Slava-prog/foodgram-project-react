@@ -9,11 +9,11 @@ User = get_user_model()
 class Ingredient(models.Model):
     "Класс ингредиентов для создания рецепта."
     name = models.CharField(
-        max_length=2500,
+        max_length=200,
         verbose_name='Название'
     )
     measurement_unit = models.CharField(
-        max_length=2500,
+        max_length=200,
         verbose_name='Единица измерения'
     )
 
