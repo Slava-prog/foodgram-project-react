@@ -18,11 +18,6 @@ def is_subscribed(self, obj):
         return False
 
 
-def check_password(user, password):
-    "Проверка правильности пароля."
-    return str(user.password) == str(password)
-
-
 def writing_shopping_cart(shopping_cart):
     "Создание файла со списком покупок."
     shopping_list = {}

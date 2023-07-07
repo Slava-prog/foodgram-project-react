@@ -4,7 +4,6 @@ from django.shortcuts import get_object_or_404
 from rest_framework import permissions, status, viewsets, filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework_simplejwt.tokens import AccessToken
 
 from .filters import RecipeFilter, IngredientFilter
 from .models import (Ingredient, Favorite, Follow, Recipe,
@@ -22,7 +21,7 @@ from .serializers import (FavoriteSerializer,
                           UserSerializer,
                           UserGETSerializer,
                           )
-from .utils import (check_password, writing_shopping_cart,
+from .utils import (writing_shopping_cart,
                     add_delete_shopping_cart_favorite)
 from users.models import CustomUser
 

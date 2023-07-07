@@ -1,5 +1,3 @@
-from django.core.exceptions import ValidationError
-from django.core.validators import RegexValidator
 from rest_framework import serializers
 
 from .fields import Base64ImageField, Hex2NameColor
@@ -99,7 +97,8 @@ class RecipeGETSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = ('id', 'name', 'text', 'author', 'image', 'tags', 'cooking_time',
+        fields = ('id', 'name', 'text', 'author',
+                  'image', 'tags', 'cooking_time',
                   'ingredients', 'is_favorited', 'is_in_shopping_cart')
 
     def get_is_favorited(self, obj):
@@ -228,7 +227,8 @@ class FollowSerializer(serializers.ModelSerializer):
         recipes_limit = self.context.get(
             'request').query_params.get('recipes_limit')
         if recipes_limit:
-            recipes = Recipe.objects.filter(author=obj.author)[:int(recipes_limit)]
+            recipes = Recipe.objects.filter(
+                author=obj.author)[:int(recipes_limit)]
         else:
             recipes = Recipe.objects.filter(author=obj.author)
         return RecipeFollowSerializer(recipes, many=True).data
