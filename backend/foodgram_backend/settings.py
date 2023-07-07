@@ -10,7 +10,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv()
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure')
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     '127.0.0.1', 'localhost', '192.168.56.102',
@@ -73,6 +73,12 @@ DATABASES = {
         'PORT': os.getenv('DB_PORT', 5432)
     }
 }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -123,6 +129,34 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Token',),
 }
 AUTH_USER_MODEL = 'users.CustomUser'
+
+DJOSER = {
+    "LOGIN_FIELD": 'email',
+    'USER_ID_FIELD': 'id',
+    'PASSWORD_RESET_CONFIRM_URL': 'set_password/{uid}/{token}',
+    "SEND_ACTIVATION_EMAIL": False,
+    'HIDE_USERS': False,
+    'SERIALIZERS': {
+
+        'user': 'foodgram.serializers.UserGETSerializer',
+        'current_user': 'foodgram.serializers.UserGETSerializer',
+    },
+    'PERMISSIONS': {
+        'activation': ['rest_framework.permissions.AllowAny'],
+        'password_reset_confirm': ['rest_framework.permissions.AllowAny'],
+        'set_password': ['djoser.permissions.CurrentUserOrAdmin'],
+        'username_reset': ['rest_framework.permissions.AllowAny'],
+        'username_reset_confirm': ['rest_framework.permissions.AllowAny'],
+        'set_username': ['djoser.permissions.CurrentUserOrAdmin'],
+        'user_create': ['rest_framework.permissions.AllowAny'],
+        'user_delete': ['djoser.permissions.CurrentUserOrAdmin'],
+        'user': ['rest_framework.permissions.AllowAny'],
+        'user_me': ['rest_framework.permissions.IsAuthenticated'],
+        'user_list': ['rest_framework.permissions.AllowAny'],
+        'token_create': ['rest_framework.permissions.AllowAny'],
+        'token_destroy': ['rest_framework.permissions.IsAuthenticated'],
+    }
+}
 
 CORS_ORIGIN_WHITELIST = ['http://localhost:8000', 'https://slavas-practicum.ddns.net']
 

@@ -17,10 +17,12 @@ router_v1.register('users', UserGetPostViewSet, basename='users')
 
 urlpatterns = [
     path('', include(router_v1.urls)),
-    path('auth/token/login/',
+    path('auth/', include('djoser.urls.authtoken')),
+]
+
+'''path('auth/token/login/',
          ObtainTokenViewSet.as_view({'post': 'create'}),
          name='token'),
     path('auth/token/logout/',
          LogoutViewSet.as_view({'post': 'post'}),
-         name='token'),
-]
+         name='token'),'''
