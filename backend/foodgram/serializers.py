@@ -39,7 +39,7 @@ class UserSerializer(serializers.ModelSerializer):
         return is_subscribed(self, obj)
 
 
-class SignUpSerializer(serializers.Serializer):
+'''class SignUpSerializer(serializers.Serializer):
     """Сериализатор для создания объектов класса User."""
     username = serializers.CharField(
         required=True,
@@ -81,27 +81,27 @@ class SignUpSerializer(serializers.Serializer):
             raise serializers.ValidationError(
                 'Пользователь с таким "email" уже существует'
             )
-        return data
+        return data'''
 
 
-class ObtainTokenSerializer(serializers.ModelSerializer):
+'''class ObtainTokenSerializer(serializers.ModelSerializer):
     """Сериализатор для объектов класса User при получении токена."""
     email = serializers.EmailField(max_length=254)
     password = serializers.CharField(max_length=150, required=True)
 
     class Meta:
         model = CustomUser
-        fields = ('email', 'password')
+        fields = ('email', 'password')'''
 
 
-class UserSetPasswordSerializer(serializers.ModelSerializer):
+'''class UserSetPasswordSerializer(serializers.ModelSerializer):
     """Сериализатор для объектов класса User при смене пароля."""
     new_password = serializers.CharField(max_length=150, required=True)
     current_password = serializers.CharField(max_length=150, required=True)
 
     class Meta:
         model = CustomUser
-        fields = ('new_password', 'current_password')
+        fields = ('new_password', 'current_password')'''
 
 
 class IngredientSerializer(serializers.ModelSerializer):

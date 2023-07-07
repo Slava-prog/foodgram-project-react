@@ -14,31 +14,32 @@ from .permissions import IsAdminOrReadOnly
 from .serializers import (FavoriteSerializer,
                           FollowSerializer,
                           IngredientSerializer,
-                          ObtainTokenSerializer,
+                          # ObtainTokenSerializer,
                           RecipeIngredientSerializer,
                           RecipeGETSerializer,
                           RecipePOSTSerializer,
-                          SignUpSerializer,
+                          # SignUpSerializer,
                           ShoppingCartSerializer,
                           TagSerializer,
                           UserSerializer,
                           UserGETSerializer,
-                          UserSetPasswordSerializer)
+                          # UserSetPasswordSerializer
+                          )
 from .utils import (check_password, writing_shopping_cart,
                     add_delete_shopping_cart_favorite)
 from users.models import CustomUser
 
 
-class LogoutViewSet(viewsets.ModelViewSet):
+'''class LogoutViewSet(viewsets.ModelViewSet):
     """Вьюсет для получения пользователем JWT токена."""
     queryset = CustomUser.objects.all()
 
     def post(self, request, *args, **kwargs):
         return Response({'auth_token': ''},
-                        status=status.HTTP_204_NO_CONTENT)
+                        status=status.HTTP_204_NO_CONTENT)'''
 
 
-class ObtainTokenViewSet(viewsets.ModelViewSet):
+'''class ObtainTokenViewSet(viewsets.ModelViewSet):
     """Вьюсет для получения пользователем JWT токена."""
     queryset = CustomUser.objects.all()
     serializer_class = ObtainTokenSerializer
@@ -59,7 +60,7 @@ class ObtainTokenViewSet(viewsets.ModelViewSet):
         return Response(
             {'password': 'Пароль неверен'},
             status=status.HTTP_400_BAD_REQUEST
-        )
+        )'''
 
 
 class UserGetPostViewSet(viewsets.ModelViewSet):
@@ -69,7 +70,7 @@ class UserGetPostViewSet(viewsets.ModelViewSet):
     pagination_class = PageLimitPagination
     permission_classes = (permissions.AllowAny,)
 
-    @action(
+    '''@action(
         methods=['POST'],
         detail=False,
         permission_classes=(permissions.IsAuthenticated,)
@@ -91,9 +92,9 @@ class UserGetPostViewSet(viewsets.ModelViewSet):
         return Response(
             {'password': 'Пароль неверен'},
             status=status.HTTP_400_BAD_REQUEST
-        )
+        )'''
 
-    @action(
+    '''@action(
         methods=['GET'],
         detail=False,
         permission_classes=(permissions.IsAuthenticated,)
@@ -101,9 +102,9 @@ class UserGetPostViewSet(viewsets.ModelViewSet):
     def me(self, request):
         user = self.request.user
         serializer = UserGETSerializer(user, context={'request': request})
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.data, status=status.HTTP_200_OK)'''
 
-    @action(
+    '''@action(
         methods=['POST'],
         detail=False,
         permission_classes=(permissions.AllowAny,)
@@ -112,7 +113,7 @@ class UserGetPostViewSet(viewsets.ModelViewSet):
         serializer = SignUpSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)'''
 
     @action(
         methods=['GET'],
