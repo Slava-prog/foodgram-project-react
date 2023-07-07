@@ -12,7 +12,7 @@ class Command(BaseCommand):
         pass
 
     def handle(self, *args, **options):
-        df = pd.read_json('/data/ingredients.json')
+        df = pd.read_json('data/ingredients.json')
         for import_name, import_unit in zip(df.name, df.measurement_unit):
             models = Ingredient(name=import_name, measurement_unit=import_unit)
             models.save()

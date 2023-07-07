@@ -13,9 +13,11 @@ router_v1 = routers.DefaultRouter()
 router_v1.register('recipes', RecipeViewSet, basename='recipe')
 router_v1.register('tags', TagViewSet, basename='tag')
 router_v1.register('ingredients', IngredientViewSet, basename='ingredient')
-# router_v1.register('users', UserGetPostViewSet, basename='users')
+router_v1.register('users', UserGetPostViewSet, basename='users')
 
 urlpatterns = [
+    path('users/subscriptions/', UserGetPostViewSet.as_view({'get': 'subscriptions'}),
+         name='subscriptions'),
     path('', include('djoser.urls')),
     path('', include(router_v1.urls)),
     path('auth/', include('djoser.urls.authtoken')),
@@ -27,3 +29,8 @@ urlpatterns = [
     path('auth/token/logout/',
          LogoutViewSet.as_view({'post': 'post'}),
          name='token'),'''
+
+'''path('users/<int:user_id>/subscribe/',
+         UserGetPostViewSet.as_view('post': 'subscribe'), name='subscribe'),
+    path('users/subscriptions/', UserGetPostViewSet.as_view('get': 'subscriptions'),
+         name='subscriptions'),'''
