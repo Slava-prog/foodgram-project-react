@@ -125,7 +125,6 @@ SIMPLE_JWT = {
 }
 
 AUTH_USER_MODEL = 'users.CustomUser'
-
 DJOSER = {
     "LOGIN_FIELD": 'email',
     'USER_ID_FIELD': 'id',
