@@ -67,6 +67,12 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
         model = RecipeIngredient
         fields = ('id', 'name', 'measurement_unit', 'amount')
 
+    def validate_amount(self, value):
+        if value <= 0:
+            raise serializers.ValidationError(
+                'Кол-во ингредиента должно быть целым положительным числом')
+        return value
+
 
 class TagSerializer(serializers.ModelSerializer):
     """Сериализатор для модели Tag."""
