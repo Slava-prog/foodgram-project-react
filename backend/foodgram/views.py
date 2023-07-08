@@ -118,7 +118,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     filterset_class = RecipeFilter
     pagination_class = PageLimitPagination
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (permissions.AllowAny,)
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
@@ -134,7 +134,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @action(
         methods=['GET'],
         detail=False,
-        permission_classes=(permissions.IsAuthenticated,)
+        permission_classes=(permissions.AllowAny,)
     )
     def download_shopping_cart(self, request, *args, **kwargs):
         user = self.request.user

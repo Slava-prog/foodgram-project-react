@@ -13,7 +13,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure')
 DEBUG = False
 
 ALLOWED_HOSTS = [
-    '127.0.0.1', 'localhost', '192.168.56.102',
+    '127.0.0.1', 'localhost', '192.168.56.102', '192.168.0.105',
     '0.0.0.0', '84.252.138.51', 'slavas-practicum.ddns.net']
 
 INSTALLED_APPS = [

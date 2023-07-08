@@ -194,6 +194,12 @@ class RecipePOSTSerializer(serializers.ModelSerializer):
             ingredient_list.append(valid_ingredient)
         return data
 
+    def validate_cooking_time(self, value):
+        if value <= 0:
+            raise serializers.ValidationError(
+                'Время приготовления должно быть целым положительным числом')
+        return value
+
 
 class FollowSerializer(serializers.ModelSerializer):
     """Сериализатор для модели Follow."""
