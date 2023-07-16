@@ -3,8 +3,6 @@
 #  Сервер
 
 Сервер: 84.252.138.51   slavas-practicum.ddns.net
-Админ: rtost@mail.ru
-Пароль: Slava132!
 
 #  Описание проекта
 
